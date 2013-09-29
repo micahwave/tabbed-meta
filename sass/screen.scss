@@ -1,0 +1,98 @@
+.tm-metabox.postbox {
+
+	.inside {
+		margin: 0 !important;
+		padding: 1em;
+		position: relative;
+		background: #fff;
+	}
+
+	&.has-panels .inside {
+		padding: 0;
+	}
+}
+
+.tm-menu-bg {
+	
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 199px;
+	background: #f5f5f5;
+	border-right: 1px solid #dfdfdf;
+}
+
+.tm-menu {
+
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 200px;
+	margin: 0;
+	
+	li {
+		padding: 0.5em 1em;
+		color:#999;
+		text-shadow: #fff 0 1px 1px;
+		font-weight: bold;
+		border-bottom:1px solid #dfdfdf;
+		background-color: #f1f1f1;
+		background-image: -moz-linear-gradient(-90deg, #f9f9f9 , #ececec );
+		background-image: -webkit-gradient(linear,left top,left bottom,from(#f9f9f9),to(#ececec));
+		background-image: linear-gradient(top,#f9f9f9,#ececec);
+		margin: 0;
+		cursor: pointer;
+		border-right: 1px solid #dfdfdf;
+	}
+
+	li:hover {
+		color: #666;
+	}
+
+	li.selected {
+		background: #fff;
+		border-right-color: #fff;
+		color: #000;
+	}
+}
+
+.has-panels {
+
+	.tm-field-group-container {
+		padding: 0 0 0 200px;
+		overflow: hidden;
+		background: #fff;
+	}
+}
+
+.tm-field-group {
+	display: none;
+	padding: 1em;
+
+	&.selected {
+		display: block;
+	}
+}
+
+.tm-field {
+
+	margin-bottom: 1.5em;
+
+	&:last-child {
+		margin: 0;
+	}
+
+	label {
+		font-weight: bold;
+		padding-bottom: 0.5em;
+		display: block;
+		font-size: 1.1em;
+	}
+
+	.help {
+		margin: 0.5em 0;
+		color: #888;
+	}
+}
