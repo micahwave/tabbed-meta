@@ -1,5 +1,1 @@
-Meta Manager
-===
-
-Usage
----
+##Tabbed Meta
