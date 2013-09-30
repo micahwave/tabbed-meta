@@ -33,6 +33,7 @@ class Tabbed_Meta {
  	public function scripts() {
  		wp_enqueue_style( 'tabbed-meta', plugins_url( 'tabbed-meta/css/screen.css' ) );
  		wp_enqueue_script( 'tabbed-meta', plugins_url( 'tabbed-meta/js/main.js' ) );
+ 		wp_enqueue_script( 'post-picker', plugins_url( 'tabbed-meta/js/picker.js' ), null, time() );
  	}
 
  	/**
@@ -181,6 +182,8 @@ class Tabbed_Meta {
  		$field_class = apply_filters( 'tabbed_meta_field_class', 'Tabbed_Meta_Fields' );
 
  		$func = $field_class . '::' . $method;
+
+ 		//echo $func;
 
  		// call method to build field
  		if( is_callable( $func ) ) {
@@ -344,6 +347,10 @@ add_action( 'init', function(){
 			),
 			'breed' => array(
 				'label' => 'Breed'
+			),
+			'picker' => array(
+				'label' => 'Picker',
+				'type' => 'post_picker'
 			)
 		)
 	));
