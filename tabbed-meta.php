@@ -362,8 +362,6 @@ add_action( 'init', function(){
 		'label' => 'Different Added Field'
 	));
 
-	////////////////////
-
 	// grouped meta box
 	$tm->add_meta_box( 'more_options', 'cat', array(
 		'label' => 'More Options',
