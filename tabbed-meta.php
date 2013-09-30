@@ -243,8 +243,10 @@ class Tabbed_Meta {
  		if( !isset( $_POST[$name] ) )
  			return;
 
+ 		$type = isset( $options['type'] ) ? $options['type'] : 'text';
+
  		// basic validations
- 		switch( $options['type'] ) {
+ 		switch( $type ) {
  			case 'url':
  				$validation = 'esc_url_raw';
  				break;
@@ -322,6 +324,7 @@ class Tabbed_Meta {
 // add meta box to post type(s)
 // add fields to meta box
 
+/*
 add_action( 'init', function(){
 
 	register_post_type( 'cat', array(
@@ -386,7 +389,5 @@ add_action( 'init', function(){
 			)
 		)
 	));
-
 });
-
-
+*/
