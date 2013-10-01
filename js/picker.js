@@ -27,7 +27,7 @@
 
 		return this.each(function(){
 			
-			var $self = $(this), posts = [];
+			var $self = $(this);
 
 			// bind picker elements
 			$self.find('button').click(function(e){
@@ -42,9 +42,19 @@
 
 			$self.on('click', '.picker-list .remove', function(e){
 				e.preventDefault();
-				remove_item( $(this).data('id') );
+				remove_item( $(this).closest('li').data('id') );
 			});
 
+			$self.find('.picker-list').sortable({
+				placeholder: 'placeholder',
+				update: function(ui, e) {
+					serialize();
+				}
+			});
+
+			$self.find('.picker-select').change(function(){
+				add_item( $(this).val() );
+			});
 
 			/**
 			 * These are the posts you're looking for
@@ -72,9 +82,7 @@
 								html += _.template([
 									'<div class="result">',
 										'<%= post_title %>',
-										'<nav>',
-											'<a href="#" data-id="<%= ID %>">Add</a>',
-										'</nav>',
+										'<a href="#" data-id="<%= ID %>" class="add">Add</a>',
 									'</div>'
 								].join(''), post);
 
@@ -90,6 +98,11 @@
 			 *
 			 */
 			function add_item( id ) {
+
+				if( $self.find('.picker-list li[data-id="' + id + '"]').length ) {
+					alert('Sorry, this item was already added.');
+					return;
+				}
 				
 				$.post(
 					ajaxurl,
@@ -100,8 +113,16 @@
 					},
 					function(response) {
 						if(response) {
+
 							$self.find('.picker-list').append(response);
+
 							serialize();
+
+							// remove from list
+							$self.find('.picker-results li[data-id="' + id + '"]').remove();
+
+							// remove from select
+							$self.find('.picker-select option[value="' + id + '"]').remove();
 						}
 					}
 				);
@@ -120,9 +141,7 @@
 			 *
 			 */
 			function serialize() {
-
-				console.log('called serialize');
-
+				
 				var ids = [];
 
 				$self.find('.picker-list li').each(function(){

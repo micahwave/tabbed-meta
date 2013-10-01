@@ -35,7 +35,7 @@ class Tabbed_Meta {
  	public function scripts() {
  		wp_enqueue_style( 'tabbed-meta', plugins_url( 'tabbed-meta/css/screen.css' ) );
  		wp_enqueue_script( 'tabbed-meta', plugins_url( 'tabbed-meta/js/main.js' ) );
- 		wp_enqueue_script( 'post-picker', plugins_url( 'tabbed-meta/js/picker.js' ), null, time() );
+ 		wp_enqueue_script( 'post-picker', plugins_url( 'tabbed-meta/js/picker.js' ), array( 'jquery', 'jquery-ui-core' ) );
  	}
 
  	/**

@@ -99,8 +99,8 @@ class Tabbed_Meta_Fields {
 
 		$html = '';
 
-		if( isset( $args['options'] ) ) {
-			foreach( $options as $key => $value ) {
+		if( isset( $args['options'] ) && is_array( $args['options'] ) ) {
+			foreach( $args['options'] as $key => $value ) {
 				$html .= '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 			}
 		}
@@ -128,17 +128,18 @@ class Tabbed_Meta_Fields {
 			$posts = get_posts( array(
 				'post__in' => $ids,
 				'posts_per_page' => count( $ids ),
-				'post_type' => $post_type
+				'post_type' => $post_type,
+				'orderby' => 'post__in'
 			));
 		}
 
 		$html .= sprintf(
-			'<input type="text" name="%s" value="%s" class="picker-ids">',
+			'<input type="hidden" name="%s" value="%s" class="picker-ids">',
 			esc_attr( $args['name'] ),
 			esc_attr( $args['value'] )
 		);
 
-		$html .= '<ol class="picker-list">';
+		$html .= '<ul class="picker-list">';
 
 		if( !empty( $posts ) ) {
 			
@@ -148,16 +149,40 @@ class Tabbed_Meta_Fields {
 
 		} else {
 
-			//$html .= 'No posts found.';
+			$html .= '<p class="notice">No posts found.</p>';
 		}
 
-		$html .= '</ol>';
+		$html .= '</ul>';
+
+		$recent_posts = get_posts( array(
+			'posts_per_page' => 20,
+			'post__not_in' => $ids,
+			'post_type' => $post_type
+		));
+
+		// recent posts
+		if( $recent_posts ) {
+
+			$html .= '<h4>Select Recent Posts</h4>';
+			$html .= '<div class="picker-recent-posts"><select class="picker-select">';
+
+			foreach( $recent_posts as $post ) {
+				$html .= sprintf( 
+					'<option value="%s">%s</option>',
+					intval( $post->ID ),
+					esc_html( $post->post_title )
+				);
+			}
+
+			$html .= '</select><div>';
+		}
 
 		// search box
-		$html .= 
+		$html .=
+			'<h4>Search for Posts</h4>' .
 			'<div class="picker-search">' .
-				'<input type="text" name="s" class="picker-query" placeholder="Search">' .
-				'<button>Search</button>' .
+				'<input type="text" name="s" class="picker-query" placeholder="Enter a term or phrase">' .
+				'<button class="button">Search</button>' .
 				'<div class="picker-results"></div>' .	
 			'</div>';
 
@@ -172,10 +197,11 @@ class Tabbed_Meta_Fields {
 	 */
 	public static function get_picker_li( $post ) {
 		return sprintf(
-			'<li data-id="%s">%s'.
+			'<li data-id="%s">' .
+				'<h4>%s</h4>' .
 				'<nav>' . 
-					'<a href="#" class="remove">Remove</a>' .
 					'<a href="%s" class="edit">Edit</a>' . 
+					'<a href="#" class="remove">Remove</a>' .
 					'<a href="%s">View</a>' .
 				'</nav>' .
 			'</li>',

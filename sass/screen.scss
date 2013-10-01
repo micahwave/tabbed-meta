@@ -1,3 +1,5 @@
+@import "compass/css3";
+
 .tm-metabox.postbox {
 
 	.inside {
@@ -94,5 +96,92 @@
 	.help {
 		margin: 0.5em 0;
 		color: #888;
+	}
+}
+
+/* picker */
+.post-picker {
+	overflow: hidden;
+}
+
+.picker-list {
+
+	max-width: 600px;
+	background: #eee;
+	margin: 0;
+	padding: 1em;
+	border: 1px solid #ccc;
+	margin-bottom: 1em;
+
+	h4 {
+		margin: 0;
+	}
+
+	li {
+
+		border: 1px solid #ccc;
+		padding: 0.5em 1em;
+		@include border-radius(0.75em);
+		@include background(linear-gradient(top, #eee, #ddd));
+		line-height: 1.5;
+		cursor: move;
+		margin-bottom: 1em;
+		list-style: none;
+		counter-increment: list-counter;
+		margin-left: 2em;
+		text-align: left;
+
+		&:before {
+			content: counter(list-counter) ' ';
+			float: left;
+			margin-left: -40px;
+			font-size: 1.5em;
+			text-align: right;
+			/*width: 2em;*/
+			line-height: 35px;
+		}
+
+		nav {
+			display: block;
+			font-size: 0.8em;
+
+			a {
+				margin-right: 0.75em;
+				text-decoration: none;
+			}
+		}
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	.placeholder {
+		padding: 2em;
+		border: 1px dashed #666;
+	}
+}
+
+.picker-query {
+	margin-right: 1em;
+}
+
+.picker-results {
+
+	max-width: 600px;
+
+	.result {
+
+		padding: 1em 60px 1em 0;
+		border-bottom: 1px solid #ccc;
+
+		.add {
+			float: right;
+			margin: 0 -60px 0 20px;
+		}
+
+		&:last-child {
+			border: 0;
+		}
 	}
 }
