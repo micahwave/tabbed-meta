@@ -324,7 +324,7 @@ class Tabbed_Meta {
 // add meta box to post type(s)
 // add fields to meta box
 
-/*
+
 add_action( 'init', function(){
 
 	register_post_type( 'cat', array(
@@ -388,4 +388,3 @@ add_action( 'init', function(){
 		)
 	));
 });
-*/

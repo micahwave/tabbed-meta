@@ -5,10 +5,28 @@
 class Tabbed_Meta_Fields {
 
 	/**
-	 *
+	 * Enable some hooks that our fields will need
 	 */
 	function __construct() {
 		add_action( 'wp_ajax_get_picker_posts', array( $this, 'ajax_get_picker_posts') );
+		add_action( 'wp_ajax_get_picker_item', array( $this, 'ajax_get_picker_item' ) );
+	}
+
+	/**
+	 *
+	 */
+	function ajax_get_picker_item() {
+
+		check_ajax_referer( 'tm_fields' );
+
+		if( !empty( $_REQUEST['id'] ) ) {
+
+			$post = get_post( intval( $_REQUEST['id'] ) );
+
+			if( $post ) {
+				die( self::get_picker_li( $post ) );
+			}
+		} 
 	}
 
 	/**
@@ -99,7 +117,7 @@ class Tabbed_Meta_Fields {
 	 */
 	public static function post_picker_field( $args ) {
 
-		$html = '';
+		$html = '<div class="post-picker">';
 
 		$post_type = isset( $args['post_type'] ) ? $args['post_type'] : 'post';
 
@@ -115,44 +133,57 @@ class Tabbed_Meta_Fields {
 		}
 
 		$html .= sprintf(
-			'<input type="hidden" name="%s" value="%s">',
+			'<input type="text" name="%s" value="%s" class="picker-ids">',
 			esc_attr( $args['name'] ),
 			esc_attr( $args['value'] )
 		);
 
+		$html .= '<ol class="picker-list">';
+
 		if( !empty( $posts ) ) {
-
-			$html .= '<ol>';
-
+			
 			foreach( $posts as $post ) {
-				$html .= sprintf(
-					'<li>%s'.
-						'<nav>' . 
-							'<a href="#" class="remove">Remove</a>' .
-							'<a href="#" class="edit">Edit</a>' . 
-						'</nav>' .
-					'</li>',
-					$post->post_title
-				);
+				$html .= self::get_picker_li( $post );
 			}
-
-			$html .= '</ol>';
 
 		} else {
 
-			$html .= 'No posts found.';
+			//$html .= 'No posts found.';
 		}
 
+		$html .= '</ol>';
+
+		// search box
 		$html .= 
 			'<div class="picker-search">' .
-				'<input type="text" name="s" placeholder="Search">' .
+				'<input type="text" name="s" class="picker-query" placeholder="Search">' .
 				'<button>Search</button>' .
-				'<div class="picker-results"></div>' .
+				'<div class="picker-results"></div>' .	
 			'</div>';
 
-		return $html;
-		
+		// close post picker div
+		$html .= '</div>';
 
+		return $html;
+	}
+
+	/**
+	 *
+	 */
+	public static function get_picker_li( $post ) {
+		return sprintf(
+			'<li data-id="%s">%s'.
+				'<nav>' . 
+					'<a href="#" class="remove">Remove</a>' .
+					'<a href="%s" class="edit">Edit</a>' . 
+					'<a href="%s">View</a>' .
+				'</nav>' .
+			'</li>',
+			intval( $post->ID ),
+			esc_html( $post->post_title ),
+			esc_url( get_edit_post_link( $post->ID ) ),
+			esc_url( get_the_guid( $post->ID ) )
+		);
 	}
 
 
