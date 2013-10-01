@@ -1,6 +1,6 @@
 <?php
 
-
+if( !class_exists( 'Tabbed_Meta_Fields' ) ) :
 
 class Tabbed_Meta_Fields {
 
@@ -194,4 +194,7 @@ class Tabbed_Meta_Fields {
 
 	}
 }
+
+endif;
+
 new Tabbed_Meta_Fields();

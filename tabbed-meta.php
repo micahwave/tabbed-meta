@@ -10,6 +10,8 @@
 
 require_once( dirname( __FILE__ ) . '/fields.php' );
 
+if( !class_exists( 'Tabbed_Meta' ) ) :
+
 class Tabbed_Meta {
 
 	/**
@@ -320,11 +322,13 @@ class Tabbed_Meta {
  	}
 }
 
-// create new instance
-// add meta box to post type(s)
-// add fields to meta box
+endif;
 
+/**
+ * Sample Usage
+ */
 
+/*
 add_action( 'init', function(){
 
 	register_post_type( 'cat', array(
@@ -388,3 +392,4 @@ add_action( 'init', function(){
 		)
 	));
 });
+*/
