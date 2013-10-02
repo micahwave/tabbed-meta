@@ -251,7 +251,7 @@ class Tabbed_Meta {
 		foreach( $fields as $name => $options ) {
 
 			// save the field if its set
-			if( isset( $_POST[$name] ) ) {
+			if( !empty( $_POST[$name] ) ) {
 
 				$type = isset( $options['type'] ) ? $options['type'] : 'text';
 

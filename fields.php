@@ -231,33 +231,40 @@ class Tabbed_Meta_Child_Post_Picker_Field extends Tabbed_Meta_Post_Picker_Field 
 			$old_ids = array_map( 'intval', explode( ',', $old_ids ) );
 
 			// set the post parent to 0 and menu order to nil
-			$wpdb->query(
+			$sql = (
 				"
 				UPDATE $wpdb->posts AS p
 				SET p.post_parent = 0 AND p.menu_order = ''
 				WHERE p.ID IN(" . implode( ',', $old_ids ) . ")
 				"
 			);
-			
+
 			// clean cache for these posts
 			foreach( $old_ids as $id ) {
 				clean_post_cache( $id );
 			}
 		}
 
-		$i = 1;
+		// do we have ids to update?
+		if( is_array( $new_ids ) && count( $new_ids ) ) {
 
-		// setup the new ids
-		foreach( $new_ids as $id ) {
+			$i = 1;
 
-			wp_update_post( array(
-				'ID' => $id,
-				'post_parent' => $post->ID,
-				'menu_order' => $i
-			));
+			// setup the new ids
+			foreach( $new_ids as $id ) {
 
-			$i++;
+				wp_update_post( array(
+					'ID' => $id,
+					'post_parent' => $post->ID,
+					'menu_order' => $i
+				));
+
+				error_log( 'Updated Post ID: ' . $id );
+
+				$i++;
+			}
 		}
+		
 	}
 }
 
