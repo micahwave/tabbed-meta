@@ -197,9 +197,9 @@ class Tabbed_Meta_Post_Picker_Field extends Tabbed_Meta_Field {
 			'<li data-id="%s">' .
 				'<h4>%s</h4>' .
 				'<nav>' . 
-					'<a href="%s" class="edit">Edit</a>' . 
+					'<a href="%s" class="edit" target="_blank">Edit</a>' . 
 					'<a href="#" class="remove">Remove</a>' .
-					'<a href="%s">View</a>' .
+					'<a href="%s" target="_blank">View</a>' .
 				'</nav>' .
 			'</li>',
 			intval( $post->ID ),
