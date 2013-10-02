@@ -44,7 +44,7 @@ class Tabbed_Meta_Checkbox_Field extends Tabbed_Meta_Field {
  		);
 	}
 
-	public static function save( $post_id, $name, $value ) {
+	public static function save( $post_id, $name, $value, $post = null ) {
 		update_post_meta( $post_id, $name, 1 );
 	}
 }
@@ -72,7 +72,7 @@ class Tabbed_Meta_Link_Field extends Tabbed_Meta_Field {
 	/**
 	 *
 	 */
-	public static function save( $post_id, $name, $value ) {
+	public static function save( $post_id, $name, $value, $post = null ) {
 		update_post_meta( $post_id, $name, esc_url( $value ) );
 	}
 }
