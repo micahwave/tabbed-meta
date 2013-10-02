@@ -16,7 +16,7 @@
 
 			$self.on('click', '.picker-results a', function(e){
 				e.preventDefault();
-				add_item( $(this).data('id') );
+				add_item( $(this).data('id'), $(this).data('title') );
 			});
 
 			$self.on('click', '.picker-list .remove', function(e){
@@ -32,7 +32,7 @@
 			});
 
 			$self.find('.picker-select').change(function(){
-				add_item( $(this).val() );
+				add_item( $(this).val(), $('option:selected', this).text() );
 			});
 
 			/**
@@ -43,8 +43,9 @@
 				$.getJSON(
 					ajaxurl,
 					{
-						action: 'get_picker_posts',
+						action: 'tm_search_posts',
 						s: $self.find('.picker-query').val(),
+						post_type: $self.find('.post-picker').data('post-type'),
 						_ajax_nonce: nonce
 					},
 					function(response) {
@@ -56,12 +57,11 @@
 							posts = response;
 				
 							_.each(response, function(post){
-								console.log(post);
-
+								
 								html += _.template([
-									'<div class="result">',
+									'<div class="result" data-id="<%= ID %>">',
 										'<%= post_title %>',
-										'<a href="#" data-id="<%= ID %>" class="add">Add</a>',
+										'<a href="#" data-id="<%= ID %>" data-title="<%= post_title %>" class="add">Add</a>',
 									'</div>'
 								].join(''), post);
 
@@ -76,13 +76,7 @@
 			/**
 			 *
 			 */
-			function add_item( id ) {
-
-				var data = {
-					action: 'get_picker_item',
-					id: id,
-					_ajax_nonce: nonce
-				};
+			function add_item( id, title ) {
 
 				// dont allow duplicates
 				if( $self.find('.picker-list li[data-id="' + id + '"]').length ) {
@@ -90,28 +84,30 @@
 					return;
 				}
 
+				html = _.template([
+					'<li data-id="<%= id %>">',
+						'<h4><%= title %></h4>',
+						'<nav>',
+							'<a href="' + post_picker_settings.admin_url + 'post.php?post=<%= id %>&action=edit" target="_blank" class="edit">Edit</a>',
+							'<a href="#" class="remove">Remove</a>',
+							'<a href="' + post_picker_settings.home_url + '?p=<%= id %>" target="_blank">View</a>',
+						'</nav>',
+					'</li>'
+				].join(''), { id: id, title: title } );
+
 				// remove notice if its there
 				$self.find('.notice').remove();
-				
-				$.post(
-					ajaxurl,
-					data,
-					function(response) {
-						if(response) {
 
-							$self.find('.picker-list').append(response);
+				$self.find('.picker-list').append(html);
 
-							serialize();
+				serialize();
 
-							// remove from list
-							$self.find('.picker-results li[data-id="' + id + '"]').remove();
+				// remove from list
+				$self.find('.picker-results .result[data-id="' + id + '"]').remove();
 
-							// remove from select
-							$self.find('.picker-select option[value="' + id + '"]').remove();
-						}
-					}
-				);
-
+				// remove from select
+				$self.find('.picker-select option[value="' + id + '"]').remove();
+			
 			}
 
 			/**
@@ -147,5 +143,5 @@
 })(jQuery);
 
 jQuery('document').ready(function($){
-	$('.tm-field-post_picker').postPicker();
+	$('.tm-field-post_picker, .tm-field-child_post_picker').postPicker();
 });

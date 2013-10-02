@@ -28,7 +28,6 @@ class Tabbed_Meta {
  		add_action( 'edit_form_advanced', array( $this, 'add_nonce' ) );
  		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
  		add_action( 'wp_ajax_tm_search_posts', array( $this, 'search_posts') );
-		//add_action( 'wp_ajax_get_picker_item', array( $this, 'ajax_get_picker_item' ) );
  	}
 
  	/**
@@ -38,7 +37,31 @@ class Tabbed_Meta {
  		wp_enqueue_style( 'tabbed-meta', plugins_url( 'tabbed-meta/css/screen.css' ) );
  		wp_enqueue_script( 'tabbed-meta', plugins_url( 'tabbed-meta/js/main.js' ) );
  		wp_enqueue_script( 'post-picker', plugins_url( 'tabbed-meta/js/picker.js' ), array( 'jquery', 'jquery-ui-core' ) );
+ 		wp_localize_script( 'post-picker', 'post_picker_settings', array(
+ 			'home_url' => home_url( '/' ),
+ 			'admin_url' => admin_url() 
+ 		));
  	}
+
+ 	/**
+	 *
+	 */
+	function search_posts() {
+
+		check_ajax_referer( 'tm_fields' );
+
+		if( !empty( $_REQUEST['s'] ) ) {
+
+			$posts = get_posts( array(
+				's' => sanitize_text_field( $_REQUEST['s'] ),
+				'post_type' => isset( $_REQUEST['post_type'] ) ? sanitize_text_field( $_REQUEST['post_type'] ) : 'post'
+			));
+
+			if( $posts ) {
+				die( json_encode( $posts ) );
+			}
+		}
+	}
 
  	/**
  	 *

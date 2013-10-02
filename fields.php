@@ -113,9 +113,10 @@ class Tabbed_Meta_Post_Picker_Field extends Tabbed_Meta_Field {
 	 */
 	public static function render( $args ) {
 
-		$html = '<div class="post-picker">';
-
 		$post_type = isset( $args['post_type'] ) ? $args['post_type'] : 'post';
+
+		// set the post type as a data attribute
+		$html = '<div class="post-picker" data-post-type="' . esc_attr( $post_type )  . '">';
 
 		if( isset( $args['value'] ) ) {
 
@@ -218,6 +219,9 @@ class Tabbed_Meta_Child_Post_Picker_Field extends Tabbed_Meta_Post_Picker_Field 
 		
 		global $wpdb;
 
+		// save the meta data, but also setup parent child relationship
+		parent::save( $post_id, $name, $value, $post );
+
 		$old_ids = get_post_meta( $post_id, $name, true );
 
 		$new_ids = array_map( 'intval', explode( ',', $value ) );
@@ -226,8 +230,34 @@ class Tabbed_Meta_Child_Post_Picker_Field extends Tabbed_Meta_Post_Picker_Field 
 			
 			$old_ids = array_map( 'intval', explode( ',', $old_ids ) );
 
+			// set the post parent to 0 and menu order to nil
+			$wpdb->query(
+				"
+				UPDATE $wpdb->posts AS p
+				SET p.post_parent = 0 AND p.menu_order = ''
+				WHERE p.ID IN(" . implode( ',', $old_ids ) . ")
+				"
+			);
+			
+			// clean cache for these posts
+			foreach( $old_ids as $id ) {
+				clean_post_cache( $id );
+			}
+		}
 
-		} 
+		$i = 1;
+
+		// setup the new ids
+		foreach( $new_ids as $id ) {
+
+			wp_update_post( array(
+				'ID' => $id,
+				'post_parent' => $post->ID,
+				'menu_order' => $i
+			));
+
+			$i++;
+		}
 	}
 }
 
