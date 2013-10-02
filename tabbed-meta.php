@@ -34,9 +34,9 @@ class Tabbed_Meta {
  	 * Add some scripts and styles to the page
  	 */
  	public function scripts() {
- 		wp_enqueue_style( 'tabbed-meta', plugins_url( 'tabbed-meta/css/screen.css' ) );
- 		wp_enqueue_script( 'tabbed-meta', plugins_url( 'tabbed-meta/js/main.js' ) );
- 		wp_enqueue_script( 'post-picker', plugins_url( 'tabbed-meta/js/picker.js' ), array( 'jquery', 'jquery-ui-core' ) );
+ 		wp_enqueue_style( 'tabbed-meta', plugins_url( 'css/screen.css', __FILE__ ) );
+ 		wp_enqueue_script( 'tabbed-meta', plugins_url( 'js/main.js', __FILE__ ) );
+ 		wp_enqueue_script( 'post-picker', plugins_url( 'js/picker.js', __FILE__ ), array( 'jquery', 'jquery-ui-core', 'underscore' ) );
  		wp_localize_script( 'post-picker', 'post_picker_settings', array(
  			'home_url' => home_url( '/' ),
  			'admin_url' => admin_url() 
