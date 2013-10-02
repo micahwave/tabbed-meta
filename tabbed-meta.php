@@ -326,7 +326,7 @@ endif;
  * Sample Usage
  */
 
-
+/*
 add_action( 'init', function(){
 
 	register_post_type( 'cat', array(
@@ -390,4 +390,4 @@ add_action( 'init', function(){
 		)
 	));
 });
-	
+*/
