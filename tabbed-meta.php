@@ -27,6 +27,8 @@ class Tabbed_Meta {
  		add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
  		add_action( 'edit_form_advanced', array( $this, 'add_nonce' ) );
  		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
+ 		add_action( 'wp_ajax_tm_search_posts', array( $this, 'search_posts') );
+		//add_action( 'wp_ajax_get_picker_item', array( $this, 'ajax_get_picker_item' ) );
  	}
 
  	/**
@@ -169,9 +171,6 @@ class Tabbed_Meta {
  		// default field type is text
  		$field_type = isset( $args['type'] ) ? $args['type'] : 'text';
 
- 		// method name
- 		$method = $field_type . '_field';
-
  		// build part of the field
  		$html .= '<div class="tm-field tm-field-'.esc_attr( $field_type ).'">';
 
@@ -179,13 +178,8 @@ class Tabbed_Meta {
  		if( !empty( $args['label'] ) ) {
  			$html .= '<label>'.esc_html( $args['label'] ).'</label>';
  		}
- 		
- 		// filter the field building class
- 		$field_class = apply_filters( 'tabbed_meta_field_class', 'Tabbed_Meta_Fields' );
-
- 		$func = $field_class . '::' . $method;
-
- 		//echo $func;
+ 
+ 		$func = 'Tabbed_Meta_' . $field_type . '_Field::render';
 
  		// call method to build field
  		if( is_callable( $func ) ) {
@@ -232,45 +226,26 @@ class Tabbed_Meta {
 		$fields = $this->get_fields_for_post_type( $post->post_type );
 
 		foreach( $fields as $name => $options ) {
-			$this->save_custom_field( $post_id, $name, $options );
+
+			// save the field if its set
+			if( isset( $_POST[$name] ) ) {
+
+				$type = isset( $options['type'] ) ? $options['type'] : 'text';
+
+		 		$func = 'Tabbed_Meta_' . $type . '_Field::save';
+
+		 		// save field
+		 		if( is_callable( $func ) ) {	
+		 			call_user_func_array( $func, array( $post_id, $name, $_POST[$name], $post ) );
+		 		}
+
+		 	// no value, delete
+			} else {
+
+				delete_post_meta( $post_id, $name );
+			}
+			
 		}
- 	}
-
- 	/**
- 	 *
- 	 */
- 	public function save_custom_field( $post_id, $name, $options ) {
-
- 		// make sure its set
- 		if( !isset( $_POST[$name] ) )
- 			return;
-
- 		$type = isset( $options['type'] ) ? $options['type'] : 'text';
-
- 		// basic validations
- 		switch( $type ) {
- 			case 'url':
- 				$validation = 'esc_url_raw';
- 				break;
- 			case 'checkbox':
- 				$validation = 'intval';
- 				break;
- 			default:
- 				$validation = 'sanitize_text_field';
- 				break;
- 		}
-
- 		if( is_callable( $validation ) ) {
- 			$value = call_user_func( $validation, $_POST[$name] );
- 		} else {
- 			$value = sanitize_text_field( $_POST[$name] );
- 		}
-
- 		if( $value || $value == 0 ) {
- 			update_post_meta( $post_id, $name, $value );
- 		} else {
- 			delete_post_meta( $post_id, $name );
- 		}
  	}
 
  	/**
@@ -328,7 +303,7 @@ endif;
  * Sample Usage
  */
 
-/*
+
 add_action( 'init', function(){
 
 	register_post_type( 'cat', array(
@@ -392,4 +367,4 @@ add_action( 'init', function(){
 		)
 	));
 });
-*/
+	

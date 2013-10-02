@@ -1,58 +1,22 @@
 <?php
 
-if( !class_exists( 'Tabbed_Meta_Fields' ) ) :
+if( !class_exists( 'Tabbed_Meta_Field' ) ) :
 
-class Tabbed_Meta_Fields {
-
-	/**
-	 * Enable some hooks that our fields will need
-	 */
-	function __construct() {
-		add_action( 'wp_ajax_get_picker_posts', array( $this, 'ajax_get_picker_posts') );
-		add_action( 'wp_ajax_get_picker_item', array( $this, 'ajax_get_picker_item' ) );
+/**
+ *
+ */
+class Tabbed_Meta_Field {
+	public static function save( $post_id, $name, $value, $post ) {
+		update_post_meta( $post_id, $name, sanitize_text_field( $value ) ); 
 	}
+}
 
-	/**
-	 *
-	 */
-	function ajax_get_picker_item() {
+/**
+ *
+ */
+class Tabbed_Meta_Text_Field extends Tabbed_Meta_Field {
 
-		check_ajax_referer( 'tm_fields' );
-
-		if( !empty( $_REQUEST['id'] ) ) {
-
-			$post = get_post( intval( $_REQUEST['id'] ) );
-
-			if( $post ) {
-				die( self::get_picker_li( $post ) );
-			}
-		} 
-	}
-
-	/**
-	 *
-	 */
-	function ajax_get_picker_posts() {
-
-		check_ajax_referer( 'tm_fields' );
-
-		if( !empty( $_REQUEST['s'] ) ) {
-
-			$posts = get_posts( array(
-				's' => sanitize_text_field( $_REQUEST['s'] ),
-				'post_type' => isset( $_REQUEST['post_type'] ) ? sanitize_text_field( $_REQUEST['post_type'] ) : 'post'
-			));
-
-			if( $posts ) {
-				die( json_encode( $posts ) );
-			}
-		}
-	}
-	
-	/**
-	 *
-	 */
-	public static function text_field( $args ) {
+	public static function render( $args ) {
 
 		// this input can have a placeholder value
  		$placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
@@ -64,11 +28,14 @@ class Tabbed_Meta_Fields {
  			esc_attr( $placeholder )
  		);
 	}
+}
 
-	/**
-	 *
-	 */
-	public static function checkbox_field( $args ) {
+/**
+ *
+ */
+class Tabbed_Meta_Checkbox_Field extends Tabbed_Meta_Field {
+
+	public static function render( $args ) {
 
 		return sprintf(
  			'<input type="checkbox" name="%s" value="1" %s>',
@@ -77,10 +44,20 @@ class Tabbed_Meta_Fields {
  		);
 	}
 
+	public static function save( $post_id, $name, $value ) {
+		update_post_meta( $post_id, $name, 1 );
+	}
+}
+
+/**
+ *
+ */
+class Tabbed_Meta_Link_Field extends Tabbed_Meta_Field {
+
 	/**
 	 *
 	 */
-	public static function link_field( $args ) {
+	public static function render( $args ) {
 
 		$placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
 
@@ -95,7 +72,20 @@ class Tabbed_Meta_Fields {
 	/**
 	 *
 	 */
-	public static function select_field( $args ) {
+	public static function save( $post_id, $name, $value ) {
+		update_post_meta( $post_id, $name, esc_url( $value ) );
+	}
+}
+
+/**
+ *
+ */
+class Tabbed_Meta_Select_Field extends Tabbed_Meta_Field {
+
+	/**
+	 *
+	 */
+	public static function render( $args ) {
 
 		$html = '';
 
@@ -111,11 +101,17 @@ class Tabbed_Meta_Fields {
 			$html
 		);
 	}
+}
+
+/**
+ *
+ */
+class Tabbed_Meta_Post_Picker_Field extends Tabbed_Meta_Field {
 
 	/**
 	 * Saves posts as comma separted ids
 	 */
-	public static function post_picker_field( $args ) {
+	public static function render( $args ) {
 
 		$html = '<div class="post-picker">';
 
@@ -149,7 +145,7 @@ class Tabbed_Meta_Fields {
 
 		} else {
 
-			$html .= '<p class="notice">No posts found.</p>';
+			$html .= '<p class="notice">No posts selected.</p>';
 		}
 
 		$html .= '</ul>';
@@ -174,7 +170,7 @@ class Tabbed_Meta_Fields {
 				);
 			}
 
-			$html .= '</select><div>';
+			$html .= '</select></div>';
 		}
 
 		// search box
@@ -211,16 +207,28 @@ class Tabbed_Meta_Fields {
 			esc_url( get_the_guid( $post->ID ) )
 		);
 	}
+}
 
+class Tabbed_Meta_Child_Post_Picker_Field extends Tabbed_Meta_Post_Picker_Field {
 
 	/**
-	 * Sets child post post_parent to current post and sets menu order
+	 *
 	 */
-	public static function child_post_picker( $args ) {
+	public static function save( $post_id, $name, $value, $post ) {
+		
+		global $wpdb;
 
+		$old_ids = get_post_meta( $post_id, $name, true );
+
+		$new_ids = array_map( 'intval', explode( ',', $value ) );
+
+		if( $old_ids ) {
+			
+			$old_ids = array_map( 'intval', explode( ',', $old_ids ) );
+
+
+		} 
 	}
 }
 
 endif;
-
-new Tabbed_Meta_Fields();

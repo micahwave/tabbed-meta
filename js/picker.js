@@ -1,25 +1,4 @@
 (function($){
-	
-
-	/*
-	picker = {
-		init: function() {
-			
-		},
-		add_item: function() {
-
-		},
-		remove_item: function() {
-
-		},
-		search: function() {
-
-		},
-		serialize: function() {
-
-		}
-	}
-	*/
 
 	$.fn.postPicker = function() {
 
@@ -99,18 +78,24 @@
 			 */
 			function add_item( id ) {
 
+				var data = {
+					action: 'get_picker_item',
+					id: id,
+					_ajax_nonce: nonce
+				};
+
+				// dont allow duplicates
 				if( $self.find('.picker-list li[data-id="' + id + '"]').length ) {
 					alert('Sorry, this item was already added.');
 					return;
 				}
+
+				// remove notice if its there
+				$self.find('.notice').remove();
 				
 				$.post(
 					ajaxurl,
-					{
-						action: 'get_picker_item',
-						id: id,
-						_ajax_nonce: nonce
-					},
+					data,
 					function(response) {
 						if(response) {
 
@@ -135,6 +120,10 @@
 			function remove_item( id ) {
 				$self.find('.picker-list li[data-id="' + id + '"]').remove();
 				serialize();
+
+				if( $self.find('.picker-list li').length == 0 ) {
+					$self.find('.picker-list').html('<p class="notice">No posts selected.</p>');
+				}
 			}
 
 			/**

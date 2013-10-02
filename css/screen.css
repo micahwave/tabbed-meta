@@ -110,10 +110,14 @@
   margin-bottom: 1em;
 }
 /* line 116, ../sass/screen.scss */
+.picker-list .notice {
+  text-align: center;
+}
+/* line 120, ../sass/screen.scss */
 .picker-list h4 {
   margin: 0;
 }
-/* line 120, ../sass/screen.scss */
+/* line 124, ../sass/screen.scss */
 .picker-list li {
   border: 1px solid #ccc;
   padding: 0.5em 1em;
@@ -135,7 +139,7 @@
   margin-left: 2em;
   text-align: left;
 }
-/* line 134, ../sass/screen.scss */
+/* line 138, ../sass/screen.scss */
 .picker-list li:before {
   content: counter(list-counter) " ";
   float: left;
@@ -145,46 +149,46 @@
   /*width: 2em;*/
   line-height: 35px;
 }
-/* line 144, ../sass/screen.scss */
+/* line 148, ../sass/screen.scss */
 .picker-list li nav {
   display: block;
   font-size: 0.8em;
 }
-/* line 148, ../sass/screen.scss */
+/* line 152, ../sass/screen.scss */
 .picker-list li nav a {
   margin-right: 0.75em;
   text-decoration: none;
 }
-/* line 154, ../sass/screen.scss */
+/* line 158, ../sass/screen.scss */
 .picker-list li:last-child {
   margin-bottom: 0;
 }
-/* line 159, ../sass/screen.scss */
+/* line 163, ../sass/screen.scss */
 .picker-list .placeholder {
   padding: 2em;
   border: 1px dashed #666;
 }
 
-/* line 165, ../sass/screen.scss */
+/* line 169, ../sass/screen.scss */
 .picker-query {
   margin-right: 1em;
 }
 
-/* line 169, ../sass/screen.scss */
+/* line 173, ../sass/screen.scss */
 .picker-results {
   max-width: 600px;
 }
-/* line 173, ../sass/screen.scss */
+/* line 177, ../sass/screen.scss */
 .picker-results .result {
   padding: 1em 60px 1em 0;
   border-bottom: 1px solid #ccc;
 }
-/* line 178, ../sass/screen.scss */
+/* line 182, ../sass/screen.scss */
 .picker-results .result .add {
   float: right;
   margin: 0 -60px 0 20px;
 }
-/* line 183, ../sass/screen.scss */
+/* line 187, ../sass/screen.scss */
 .picker-results .result:last-child {
   border: 0;
 }
