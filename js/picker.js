@@ -40,14 +40,21 @@
 			 */
 			function search() {
 
+				var data = {
+					action: 'tm_search_posts',
+					s: $self.find('.picker-query').val(),
+					post_type: $self.find('.post-picker').data('post-type'),
+					_ajax_nonce: nonce
+				};
+
+				// only search posts without a parent if doing child post picker
+				if( $self.hasClass( 'tm-field-child_post_picker' ) ) {
+					data.post_parent = 0;
+				}
+
 				$.getJSON(
 					ajaxurl,
-					{
-						action: 'tm_search_posts',
-						s: $self.find('.picker-query').val(),
-						post_type: $self.find('.post-picker').data('post-type'),
-						_ajax_nonce: nonce
-					},
+					data,
 					function(response) {
 
 						if(response) {

@@ -35,8 +35,20 @@ class Tabbed_Meta {
  	 */
  	public function scripts() {
  		wp_enqueue_style( 'tabbed-meta', plugins_url( 'css/screen.css', __FILE__ ) );
+ 		wp_enqueue_style( 'jquery-ui-css', plugins_url( 'css/jquery-ui.min.css', __FILE__ ) );
  		wp_enqueue_script( 'tabbed-meta', plugins_url( 'js/main.js', __FILE__ ) );
- 		wp_enqueue_script( 'post-picker', plugins_url( 'js/picker.js', __FILE__ ), array( 'jquery', 'jquery-ui-core', 'underscore' ) );
+
+ 		wp_enqueue_script(
+ 			'post-picker',
+ 			plugins_url( 'js/picker.js', __FILE__ ),
+ 			array(
+ 				'jquery',
+ 				'jquery-ui-core',
+ 				'jquery-ui-datepicker',
+ 				'underscore'
+ 			)
+ 		);
+
  		wp_localize_script( 'post-picker', 'post_picker_settings', array(
  			'home_url' => home_url( '/' ),
  			'admin_url' => admin_url() 
@@ -52,10 +64,17 @@ class Tabbed_Meta {
 
 		if( !empty( $_REQUEST['s'] ) ) {
 
-			$posts = get_posts( array(
+			$args = array(
 				's' => sanitize_text_field( $_REQUEST['s'] ),
 				'post_type' => isset( $_REQUEST['post_type'] ) ? sanitize_text_field( $_REQUEST['post_type'] ) : 'post'
-			));
+			);		
+
+			// add post parent if possible
+			if( isset( $_REQUEST['post_parent'] ) ) {
+				$args['post_parent'] = intval( $_REQUEST['post_parent'] );
+			}
+
+			$posts = get_posts( $args );
 
 			if( $posts ) {
 				die( json_encode( $posts ) );
@@ -255,11 +274,12 @@ class Tabbed_Meta {
 
 				$type = isset( $options['type'] ) ? $options['type'] : 'text';
 
-		 		$func = 'Tabbed_Meta_' . $type . '_Field::save';
+		 		$func = 'Tabbed_Meta_' . $type . '_Field::validate';
 
 		 		// save field
 		 		if( is_callable( $func ) ) {	
-		 			call_user_func_array( $func, array( $post_id, $name, $_POST[$name], $post ) );
+		 			$value = call_user_func_array( $func, array( $post_id, $name, $_POST[$name], $post ) );
+		 			update_post_meta( $post_id, $name, $value );
 		 		}
 
 		 	// no value, delete

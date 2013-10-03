@@ -8,4 +8,9 @@ jQuery(document).ready(function($){
 		$inside.find('.tm-field-group[data-tab="' + group + '"]').addClass('selected');
 		$(this).addClass('selected');
 	});
+
+	// setup datepicker fields
+	$('.tm-field-date input[type=text]').datepicker({
+		
+	});
 });

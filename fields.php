@@ -6,8 +6,8 @@ if( !class_exists( 'Tabbed_Meta_Field' ) ) :
  *
  */
 class Tabbed_Meta_Field {
-	public static function save( $post_id, $name, $value, $post ) {
-		update_post_meta( $post_id, $name, sanitize_text_field( $value ) ); 
+	public static function validate( $post_id, $name, $value, $post ) {
+		return sanitize_text_field( $value ); 
 	}
 }
 
@@ -16,17 +16,45 @@ class Tabbed_Meta_Field {
  */
 class Tabbed_Meta_Text_Field extends Tabbed_Meta_Field {
 
+	/**
+	 *
+	 */
 	public static function render( $args ) {
 
 		// this input can have a placeholder value
  		$placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
 
+ 		// class is customizable
+ 		$class = isset( $args['class'] ) ? $args['class'] : 'widefat';
+
  		return sprintf(
- 			'<input type="text" name="%s" value="%s" placeholder="%s" class="widefat">',
+ 			'<input type="text" name="%s" value="%s" placeholder="%s" class="%s">',
  			esc_attr( $args['name'] ),
  			esc_attr( $args['value'] ),
- 			esc_attr( $placeholder )
+ 			esc_attr( $placeholder ),
+ 			esc_attr( $class )
  		);
+	}
+}
+
+/**
+ *
+ */
+class Tabbed_Meta_Date_Field extends Tabbed_Meta_Text_Field {
+
+	public static function render( $args ) {
+
+		$value = !empty( $value ) ? $value : time();
+
+ 		return sprintf(
+ 			'<input type="text" name="%s" value="%s">',
+ 			esc_attr( $args['name'] ),
+ 			esc_attr( date( 'm/d/Y', $value ) )
+ 		);
+	}
+
+	public static function validate( $post_id, $name, $value, $post = null ) {
+		return strtotime( $value );
 	}
 }
 
@@ -44,8 +72,8 @@ class Tabbed_Meta_Checkbox_Field extends Tabbed_Meta_Field {
  		);
 	}
 
-	public static function save( $post_id, $name, $value, $post = null ) {
-		update_post_meta( $post_id, $name, 1 );
+	public static function validate( $post_id, $name, $value, $post = null ) {
+		return 1;
 	}
 }
 
@@ -72,8 +100,8 @@ class Tabbed_Meta_Link_Field extends Tabbed_Meta_Field {
 	/**
 	 *
 	 */
-	public static function save( $post_id, $name, $value, $post = null ) {
-		update_post_meta( $post_id, $name, esc_url( $value ) );
+	public static function validate( $post_id, $name, $value, $post = null ) {
+		return esc_url( $value );
 	}
 }
 
@@ -90,7 +118,7 @@ class Tabbed_Meta_Select_Field extends Tabbed_Meta_Field {
 		$html = '';
 
 		if( isset( $args['options'] ) && is_array( $args['options'] ) ) {
-			
+
 			foreach( $args['options'] as $key => $value ) {
 				$html .= sprintf(
 					'<option value="%s" %s>%s</option>',
@@ -157,11 +185,7 @@ class Tabbed_Meta_Post_Picker_Field extends Tabbed_Meta_Field {
 
 		$html .= '</ul>';
 
-		$recent_posts = get_posts( array(
-			'posts_per_page' => 20,
-			'post__not_in' => $ids,
-			'post_type' => $post_type
-		));
+		$recent_posts = static::recent_posts( $ids, $post_type );
 
 		// recent posts
 		if( $recent_posts ) {
@@ -198,6 +222,17 @@ class Tabbed_Meta_Post_Picker_Field extends Tabbed_Meta_Field {
 	/**
 	 *
 	 */
+	public static function recent_posts( $ids, $post_type ) {
+		return get_posts( array(
+			'posts_per_page' => 20,
+			'post__not_in' => $ids,
+			'post_type' => $post_type
+		));
+	}
+
+	/**
+	 *
+	 */
 	public static function get_picker_li( $post ) {
 		return sprintf(
 			'<li data-id="%s">' .
@@ -221,12 +256,12 @@ class Tabbed_Meta_Child_Post_Picker_Field extends Tabbed_Meta_Post_Picker_Field 
 	/**
 	 *
 	 */
-	public static function save( $post_id, $name, $value, $post ) {
-		
+	public static function validate( $post_id, $name, $value, $post ) {
+
 		global $wpdb;
 
 		// save the meta data, but also setup parent child relationship
-		parent::save( $post_id, $name, $value, $post );
+		parent::validate( $post_id, $name, $value, $post );
 
 		$old_ids = get_post_meta( $post_id, $name, true );
 
@@ -270,7 +305,18 @@ class Tabbed_Meta_Child_Post_Picker_Field extends Tabbed_Meta_Post_Picker_Field 
 				$i++;
 			}
 		}
-		
+	}
+
+	/**
+	 *
+	 */
+	public static function recent_posts( $ids, $post_type ) {
+		return get_posts( array(
+			'posts_per_page' => 20,
+			'post__not_in' => $ids,
+			'post_type' => $post_type,
+			'post_parent' => 0
+		));
 	}
 }
 
