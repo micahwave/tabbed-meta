@@ -90,8 +90,14 @@ class Tabbed_Meta_Select_Field extends Tabbed_Meta_Field {
 		$html = '';
 
 		if( isset( $args['options'] ) && is_array( $args['options'] ) ) {
+			
 			foreach( $args['options'] as $key => $value ) {
-				$html .= '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
+				$html .= sprintf(
+					'<option value="%s" %s>%s</option>',
+					esc_attr( $key ),
+					selected( $key, $args['value'], 0 ),
+					esc_html( $value ) 
+				);
 			}
 		}
 
