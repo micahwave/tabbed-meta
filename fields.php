@@ -147,10 +147,20 @@ class Tabbed_Meta_Post_Picker_Field extends Tabbed_Meta_Field {
 	 */
 	public static function render( $args ) {
 
-		$post_type = isset( $args['post_type'] ) ? $args['post_type'] : 'post';
+		global $wp_post_types;
+
+		// setup some defaults
+		$args = wp_parse_args( $args, array(
+			'post_type'      => 'post',
+			'limit'          => 999,
+			'enable_recent' => true
+		));
+
+		$singular_name = $wp_post_types[$args['post_type']]->labels->singular_name;
+		$plural_name = $wp_post_types[$args['post_type']]->labels->name;
 
 		// set the post type as a data attribute
-		$html = '<div class="post-picker" data-post-type="' . esc_attr( $post_type )  . '">';
+		$html = '<div class="post-picker" data-post-type="' . esc_attr( $args['post_type'] )  . '" data-limit="' . intval( $args['limit'] ) . '">';
 
 		if( isset( $args['value'] ) ) {
 
@@ -159,7 +169,7 @@ class Tabbed_Meta_Post_Picker_Field extends Tabbed_Meta_Field {
 			$posts = get_posts( array(
 				'post__in' => $ids,
 				'posts_per_page' => count( $ids ),
-				'post_type' => $post_type,
+				'post_type' => $args['post_type'],
 				'orderby' => 'post__in'
 			));
 		}
@@ -180,33 +190,39 @@ class Tabbed_Meta_Post_Picker_Field extends Tabbed_Meta_Field {
 
 		} else {
 
-			$html .= '<p class="notice">No posts selected.</p>';
+			$html .= '<p class="notice">No items selected.</p>';
 		}
 
 		$html .= '</ul>';
 
-		$recent_posts = static::recent_posts( $ids, $post_type );
+		// enable recent posts
+		if( $args['enable_recent'] ) {
 
-		// recent posts
-		if( $recent_posts ) {
+			$recent_posts = static::recent_posts( $ids, $args['post_type'] );
 
-			$html .= '<h4>Select Recent Posts</h4>';
-			$html .= '<div class="picker-recent-posts"><select class="picker-select">';
+			// recent posts
+			if( $recent_posts ) {
 
-			foreach( $recent_posts as $post ) {
-				$html .= sprintf( 
-					'<option value="%s">%s</option>',
-					intval( $post->ID ),
-					esc_html( $post->post_title )
-				);
+				$html .= '<h4>Select a Recent ' . esc_html( $singular_name ) . '</h4>';
+				$html .= '<div class="picker-recent-posts"><select class="picker-select">';
+				$html .= '<option value="0">Choose a ' . esc_html( $singular_name ) . '</option>';
+
+				foreach( $recent_posts as $post ) {
+
+					$html .= sprintf( 
+						'<option value="%s">%s</option>',
+						intval( $post->ID ),
+						esc_html( $post->post_title )
+					);
+				}
+
+				$html .= '</select></div>';
 			}
-
-			$html .= '</select></div>';
 		}
 
 		// search box
 		$html .=
-			'<h4>Search for Posts</h4>' .
+			'<h4>Search for ' . esc_html( $plural_name ) .'</h4>' .
 			'<div class="picker-search">' .
 				'<input type="text" name="s" class="picker-query" placeholder="Enter a term or phrase">' .
 				'<button class="button">Search</button>' .

@@ -6,7 +6,7 @@
 
 		return this.each(function(){
 			
-			var $self = $(this);
+			var $self = $(this), limit = $self.find('.post-picker').data('limit');
 
 			// bind picker elements
 			$self.find('button').click(function(e){
@@ -32,7 +32,9 @@
 			});
 
 			$self.find('.picker-select').change(function(){
-				add_item( $(this).val(), $('option:selected', this).text() );
+				if( $(this).val() > 0 ) {
+					add_item( $(this).val(), $('option:selected', this).text() );
+				}
 			});
 
 			/**
@@ -91,6 +93,12 @@
 					return;
 				}
 
+				// dont allow more than the limit
+				if( $self.find('.picker-list li').length == limit ) {
+					alert('Sorry, the maximum number of items have been added.');
+					return;
+				}
+
 				html = _.template([
 					'<li data-id="<%= id %>">',
 						'<h4><%= title %></h4>',
@@ -113,7 +121,7 @@
 				$self.find('.picker-results .result[data-id="' + id + '"]').remove();
 
 				// remove from select
-				$self.find('.picker-select option[value="' + id + '"]').remove();
+				//$self.find('.picker-select option[value="' + id + '"]').remove();
 			
 			}
 
@@ -125,7 +133,7 @@
 				serialize();
 
 				if( $self.find('.picker-list li').length == 0 ) {
-					$self.find('.picker-list').html('<p class="notice">No posts selected.</p>');
+					$self.find('.picker-list').html('<p class="notice">No items selected.</p>');
 				}
 			}
 
