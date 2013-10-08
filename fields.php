@@ -170,7 +170,8 @@ class Tabbed_Meta_Post_Picker_Field extends Tabbed_Meta_Field {
 				'post__in' => $ids,
 				'posts_per_page' => count( $ids ),
 				'post_type' => $args['post_type'],
-				'orderby' => 'post__in'
+				'orderby' => 'post__in',
+				'post_status' => 'any'
 			));
 		}
 
