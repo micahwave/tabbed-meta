@@ -337,4 +337,88 @@ class Tabbed_Meta_Child_Post_Picker_Field extends Tabbed_Meta_Post_Picker_Field 
 	}
 }
 
+/**
+ *
+ */
+class Tabbed_Meta_Sorter_Field extends Tabbed_Meta_Field {
+
+	/**
+	 * Saves posts as comma separted ids
+	 */
+	public static function render( $args ) {
+
+		// setup some defaults
+		$args = wp_parse_args( $args, array(
+			'items' => null
+		));
+
+		$html = '<div class="sorter">';
+
+		$items = $args['items'];
+
+		if( !empty( $args['value'] ) ) {
+
+			$new_items = array();
+			foreach( explode( ',', $args['value'] ) as $v ) {
+				$new_items[$v] = $items[$v];
+			}
+
+			$items = $new_items;
+
+		}
+
+		$html .= sprintf(
+			'<input type="hidden" name="%s" value="%s" class="sorter-ids">',
+			esc_attr( $args['name'] ),
+			!empty( $args['value'] ) ? esc_attr( $args['value'] ) : implode( ',', array_keys( $items ) )
+		);
+
+		$html .= '<ul class="sorter-list">';
+
+		if( !empty( $items ) ) {
+			
+			foreach( $items as $key => $item ) {
+				$html .= self::get_picker_li( $key, $item );
+			}
+
+		} else {
+
+			$html .= '<p class="notice">No items selected.</p>';
+		}
+
+		$html .= '</ul>';
+
+		
+
+		// close div
+		$html .= '</div>';
+
+		return $html;
+	}
+
+	/**
+	 *
+	 */
+	public static function recent_posts( $ids, $post_type ) {
+		return get_posts( array(
+			'posts_per_page' => 20,
+			'post__not_in' => $ids,
+			'post_type' => $post_type
+		));
+	}
+
+	/**
+	 *
+	 */
+	public static function get_picker_li( $key, $item ) {
+		return sprintf(
+			'<li data-id="%s">' .
+				'<h4>%s</h4>' .
+			'</li>',
+			esc_attr( $key ),
+			esc_html( $item )
+		);
+	}
+}
+
 endif;

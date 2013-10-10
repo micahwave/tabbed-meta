@@ -170,25 +170,79 @@
 }
 
 /* line 169, ../sass/screen.scss */
+.sorter-list {
+  max-width: 600px;
+  background: #eee;
+  margin: 0;
+  padding: 1em;
+  border: 1px solid #ccc;
+  margin-bottom: 1em;
+}
+/* line 178, ../sass/screen.scss */
+.sorter-list .notice {
+  text-align: center;
+}
+/* line 182, ../sass/screen.scss */
+.sorter-list h4 {
+  margin: 0;
+}
+/* line 186, ../sass/screen.scss */
+.sorter-list li {
+  border: 1px solid #ccc;
+  padding: 0.5em 1em;
+  -webkit-border-radius: 0.75em;
+  -moz-border-radius: 0.75em;
+  -ms-border-radius: 0.75em;
+  -o-border-radius: 0.75em;
+  border-radius: 0.75em;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eeeeee), color-stop(100%, #dddddd));
+  background: -webkit-linear-gradient(top, #eeeeee, #dddddd);
+  background: -moz-linear-gradient(top, #eeeeee, #dddddd);
+  background: -o-linear-gradient(top, #eeeeee, #dddddd);
+  background: linear-gradient(top, #eeeeee, #dddddd);
+  line-height: 1.5;
+  cursor: move;
+  margin-bottom: 1em;
+  list-style: none;
+  counter-increment: list-counter;
+  margin-left: 2em;
+  text-align: left;
+}
+/* line 200, ../sass/screen.scss */
+.sorter-list li:before {
+  content: counter(list-counter) " ";
+  float: left;
+  margin-left: -40px;
+  font-size: 1.25em;
+  text-align: right;
+  /*width: 2em;*/
+  line-height: 22px;
+}
+/* line 210, ../sass/screen.scss */
+.sorter-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* line 216, ../sass/screen.scss */
 .picker-query {
   margin-right: 1em;
 }
 
-/* line 173, ../sass/screen.scss */
+/* line 220, ../sass/screen.scss */
 .picker-results {
   max-width: 600px;
 }
-/* line 177, ../sass/screen.scss */
+/* line 224, ../sass/screen.scss */
 .picker-results .result {
   padding: 1em 60px 1em 0;
   border-bottom: 1px solid #ccc;
 }
-/* line 182, ../sass/screen.scss */
+/* line 229, ../sass/screen.scss */
 .picker-results .result .add {
   float: right;
   margin: 0 -60px 0 20px;
 }
-/* line 187, ../sass/screen.scss */
+/* line 234, ../sass/screen.scss */
 .picker-results .result:last-child {
   border: 0;
 }
