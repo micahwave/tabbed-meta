@@ -158,9 +158,11 @@ class Tabbed_Meta_Sorter_Field extends Tabbed_Meta_Field {
 
 		// if we have a value, determine the order of the items
 		if( !empty( $args['value'] ) && is_array( $args['items'] ) ) {
+			$existing = array();
 			foreach( explode( ',', $args['value'] ) as $v ) {
-				$items[$v] = $args['items'][$v];
+				$existing[$v] = $args['items'][$v];
 			}
+			$items = $existing;
 		}
 
 		$html .= sprintf(
