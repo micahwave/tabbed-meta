@@ -152,7 +152,7 @@ class Tabbed_Meta_Sorter_Field extends Tabbed_Meta_Field {
 			'items' => array()
 		));
 
-		$html = '<div class="sorter">';
+		$html = '<div>';
 
 		$items = $args['items'];
 
@@ -164,7 +164,7 @@ class Tabbed_Meta_Sorter_Field extends Tabbed_Meta_Field {
 		}
 
 		$html .= sprintf(
-			'<input type="hidden" name="%s" value="%s" class="sorter-ids">',
+			'<input type="hidden" name="%s" value="%s" class="tm-field-sorter-ids">',
 			esc_attr( $args['name'] ),
 			!empty( $args['value'] ) ? esc_attr( $args['value'] ) : implode( ',', array_keys( $items ) )
 		);
@@ -172,7 +172,7 @@ class Tabbed_Meta_Sorter_Field extends Tabbed_Meta_Field {
 		// output items in order
 		if( count( $items ) ) {
 
-			$html .= '<ul class="sorter-list">';
+			$html .= '<ul>';
 			
 			foreach( $items as $key => $item ) {
 				$html .= sprintf(

@@ -15,7 +15,7 @@ jQuery(document).ready(function($){
 	});
 
 	// sortable for managing a preloaded list
-	$('.tm-field-sorter .sorter-list').sortable({
+	$('.tm-field-sorter ul').sortable({
 		placeholder: 'placeholder',
 		update: function(ui, e) {
 			
@@ -25,7 +25,7 @@ jQuery(document).ready(function($){
 				ids.push( $(this).data('id') );
 			});
 
-			$(this).parent().find('.sorter-ids').val( ids.join(',') );
+			$(this).parent().find('.tm-field-sorter-ids').val( ids.join(',') );
 		}
 	});
 

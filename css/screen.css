@@ -103,3 +103,53 @@
   display: inline;
   margin-left: 0.5em;
 }
+
+/* line 115, ../sass/screen.scss */
+.tm-field-sorter > div {
+  max-width: 600px;
+  background: #eee;
+  margin: 0;
+  padding: 1em;
+  border: 1px solid #ccc;
+  margin-bottom: 1em;
+}
+/* line 124, ../sass/screen.scss */
+.tm-field-sorter h4 {
+  margin: 0;
+}
+/* line 128, ../sass/screen.scss */
+.tm-field-sorter li {
+  border: 1px solid #ccc;
+  padding: 0.5em 1em;
+  -webkit-border-radius: 0.75em;
+  -moz-border-radius: 0.75em;
+  -ms-border-radius: 0.75em;
+  -o-border-radius: 0.75em;
+  border-radius: 0.75em;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eeeeee), color-stop(100%, #dddddd));
+  background: -webkit-linear-gradient(top, #eeeeee, #dddddd);
+  background: -moz-linear-gradient(top, #eeeeee, #dddddd);
+  background: -o-linear-gradient(top, #eeeeee, #dddddd);
+  background: linear-gradient(top, #eeeeee, #dddddd);
+  line-height: 1.5;
+  cursor: move;
+  margin-bottom: 1em;
+  list-style: none;
+  counter-increment: list-counter;
+  margin-left: 2em;
+  text-align: left;
+}
+/* line 142, ../sass/screen.scss */
+.tm-field-sorter li:before {
+  content: counter(list-counter) " ";
+  float: left;
+  margin-left: -40px;
+  font-size: 1.25em;
+  text-align: right;
+  /*width: 2em;*/
+  line-height: 22px;
+}
+/* line 152, ../sass/screen.scss */
+.tm-field-sorter li:last-child {
+  margin-bottom: 0;
+}
