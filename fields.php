@@ -149,12 +149,12 @@ class Tabbed_Meta_Sorter_Field extends Tabbed_Meta_Field {
 
 		// setup some defaults
 		$args = wp_parse_args( $args, array(
-			'items' => null
+			'items' => array()
 		));
 
 		$html = '<div class="sorter">';
 
-		$items = array();
+		$items = $args['items'];
 
 		// if we have a value, determine the order of the items
 		if( !empty( $args['value'] ) && is_array( $args['items'] ) ) {
