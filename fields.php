@@ -147,123 +147,25 @@ class Tabbed_Meta_Post_Picker_Field extends Tabbed_Meta_Field {
 	 */
 	public static function render( $args ) {
 
-		global $wp_post_types;
+		if( !class_exists( 'Post_Finder' ) )
+			return;
 
-		// setup some defaults
-		$args = wp_parse_args( $args, array(
-			'post_type'      => 'post',
-			'limit'          => 999,
-			'enable_recent' => true
-		));
+		// setup options for Post Finder
+		$options = array();
 
-		$singular_name = $wp_post_types[$args['post_type']]->labels->singular_name;
-		$plural_name = $wp_post_types[$args['post_type']]->labels->name;
-
-		// set the post type as a data attribute
-		$html = '<div class="post-picker" data-post-type="' . esc_attr( $args['post_type'] )  . '" data-limit="' . intval( $args['limit'] ) . '">';
-
-		if( isset( $args['value'] ) ) {
-
-			$ids = array_map( 'intval', explode( ",", $args['value'] ) );
-
-			$posts = get_posts( array(
-				'post__in' => $ids,
-				'posts_per_page' => count( $ids ),
-				'post_type' => $args['post_type'],
-				'orderby' => 'post__in'
-			));
+		if( isset( $args['limit'] ) ) {
+			$options['limit'] = $args['limit'];
 		}
 
-		$html .= sprintf(
-			'<input type="hidden" name="%s" value="%s" class="picker-ids">',
-			esc_attr( $args['name'] ),
-			esc_attr( $args['value'] )
-		);
+		ob_start();
 
-		$html .= '<ul class="picker-list">';
+		Post_Finder::render( $args['name'], $args['value'], $options );
 
-		if( !empty( $posts ) ) {
-			
-			foreach( $posts as $post ) {
-				$html .= self::get_picker_li( $post );
-			}
+		$html = ob_get_contents();
 
-		} else {
-
-			$html .= '<p class="notice">No items selected.</p>';
-		}
-
-		$html .= '</ul>';
-
-		// enable recent posts
-		if( $args['enable_recent'] ) {
-
-			$recent_posts = static::recent_posts( $ids, $args['post_type'] );
-
-			// recent posts
-			if( $recent_posts ) {
-
-				$html .= '<h4>Select a Recent ' . esc_html( $singular_name ) . '</h4>';
-				$html .= '<div class="picker-recent-posts"><select class="picker-select">';
-				$html .= '<option value="0">Choose a ' . esc_html( $singular_name ) . '</option>';
-
-				foreach( $recent_posts as $post ) {
-
-					$html .= sprintf( 
-						'<option value="%s">%s</option>',
-						intval( $post->ID ),
-						esc_html( $post->post_title )
-					);
-				}
-
-				$html .= '</select></div>';
-			}
-		}
-
-		// search box
-		$html .=
-			'<h4>Search for ' . esc_html( $plural_name ) .'</h4>' .
-			'<div class="picker-search">' .
-				'<input type="text" name="s" class="picker-query" placeholder="Enter a term or phrase">' .
-				'<button class="button">Search</button>' .
-				'<div class="picker-results"></div>' .	
-			'</div>';
-
-		// close post picker div
-		$html .= '</div>';
+		ob_clean();
 
 		return $html;
-	}
-
-	/**
-	 *
-	 */
-	public static function recent_posts( $ids, $post_type ) {
-		return get_posts( array(
-			'posts_per_page' => 20,
-			'post__not_in' => $ids,
-			'post_type' => $post_type
-		));
-	}
-
-	/**
-	 *
-	 */
-	public static function get_picker_li( $post ) {
-		return sprintf(
-			'<li data-id="%s">' .
-				'<h4>%s</h4>' .
-				'<nav>' . 
-					'<a href="%s" class="edit" target="_blank">Edit</a>' . 
-					'<a href="#" class="remove">Remove</a>' .
-					'<a href="%s" target="_blank">View</a>' .
-				'</nav>' .
-			'</li>',
-			intval( $post->ID ),
-			esc_html( $post->post_title ),
-			esc_url( get_edit_post_link( $post->ID ) ),
-			esc_url( get_the_guid( $post->ID ) )
-		);
 	}
 }
 
