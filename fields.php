@@ -137,4 +137,62 @@ class Tabbed_Meta_Select_Field extends Tabbed_Meta_Field {
 	}
 }
 
+/**
+ *
+ */
+class Tabbed_Meta_Sorter_Field extends Tabbed_Meta_Field {
+
+	/**
+	 *
+	 */
+	public static function render( $args ) {
+
+		// setup some defaults
+		$args = wp_parse_args( $args, array(
+			'items' => null
+		));
+
+		$html = '<div class="sorter">';
+
+		$items = array();
+
+		// if we have a value, determine the order of the items
+		if( !empty( $args['value'] ) && is_array( $args['items'] ) ) {
+			foreach( explode( ',', $args['value'] ) as $v ) {
+				$items[$v] = $args['items'][$v];
+			}
+		}
+
+		$html .= sprintf(
+			'<input type="hidden" name="%s" value="%s" class="sorter-ids">',
+			esc_attr( $args['name'] ),
+			!empty( $args['value'] ) ? esc_attr( $args['value'] ) : implode( ',', array_keys( $items ) )
+		);
+
+		// output items in order
+		if( count( $items ) ) {
+
+			$html .= '<ul class="sorter-list">';
+			
+			foreach( $items as $key => $item ) {
+				$html .= sprintf(
+					'<li data-id="%s">' .
+						'<h4>%s</h4>' .
+					'</li>',
+					esc_attr( $key ),
+					esc_html( $item )
+				);
+			}
+
+			$html .= '</ul>';
+
+		}
+
+		// close div
+		$html .= '</div>';
+
+		return $html;
+	}
+}
+
 endif;
