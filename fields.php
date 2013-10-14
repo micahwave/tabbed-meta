@@ -169,8 +169,6 @@ class Tabbed_Meta_Sorter_Field extends Tabbed_Meta_Field {
 			!empty( $args['value'] ) ? esc_attr( $args['value'] ) : implode( ',', array_keys( $items ) )
 		);
 
-		die_r( $items );
-
 		// output items in order
 		if( count( $items ) ) {
 
