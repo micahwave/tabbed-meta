@@ -38,13 +38,16 @@ class Tabbed_Meta_Text_Field extends Tabbed_Meta_Field {
 }
 
 /**
- *
+ * Builds a data field that uses the jquery date picker
  */
 class Tabbed_Meta_Date_Field extends Tabbed_Meta_Text_Field {
 
+	/**
+	 * Output the field markup
+	 */
 	public static function render( $args ) {
 
-		$value = !empty( $value ) ? $value : time();
+		$value = !empty( $args['value'] ) ? $args['value'] : time();
 
  		return sprintf(
  			'<input type="text" name="%s" value="%s">',
@@ -53,6 +56,11 @@ class Tabbed_Meta_Date_Field extends Tabbed_Meta_Text_Field {
  		);
 	}
 
+	/**
+	 * Save the data
+	 *
+	 * @return string
+	 */
 	public static function validate( $post_id, $name, $value, $post = null ) {
 		return strtotime( $value );
 	}
