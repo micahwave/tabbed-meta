@@ -37,22 +37,6 @@ class Tabbed_Meta {
  		wp_enqueue_style( 'tabbed-meta', plugins_url( 'css/screen.css', __FILE__ ) );
  		wp_enqueue_style( 'jquery-ui-css', plugins_url( 'css/jquery-ui.min.css', __FILE__ ) );
  		wp_enqueue_script( 'tabbed-meta', plugins_url( 'js/main.js', __FILE__ ) );
-
- 		wp_enqueue_script(
- 			'post-picker',
- 			plugins_url( 'js/picker.js', __FILE__ ),
- 			array(
- 				'jquery',
- 				'jquery-ui-core',
- 				'jquery-ui-datepicker',
- 				'underscore'
- 			)
- 		);
-
- 		wp_localize_script( 'post-picker', 'post_picker_settings', array(
- 			'home_url' => home_url( '/' ),
- 			'admin_url' => admin_url() 
- 		));
  	}
 
  	/**
