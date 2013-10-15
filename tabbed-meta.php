@@ -36,7 +36,12 @@ class Tabbed_Meta {
  	public function scripts() {
  		wp_enqueue_style( 'tabbed-meta', plugins_url( 'css/screen.css', __FILE__ ) );
  		wp_enqueue_style( 'jquery-ui-css', plugins_url( 'css/jquery-ui.min.css', __FILE__ ) );
- 		wp_enqueue_script( 'tabbed-meta', plugins_url( 'js/main.js', __FILE__ ) );
+ 		wp_enqueue_script( 'tabbed-meta', plugins_url( 'js/main.js', __FILE__ ), array(
+			'jquery',
+			'jquery-ui-core',
+			'jquery-ui-datepicker',
+			'underscore'
+ 		));
  	}
 
  	/**
