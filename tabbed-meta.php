@@ -230,7 +230,7 @@ class Tabbed_Meta {
 
  		// add some help text
  		if( !empty( $args['help'] ) ) {
- 			$html .= '<div class="help howto">'.esc_html( $args['help'] ).'</div>';
+ 			$html .= '<div class="help howto">' . wp_kses_post( $args['help'] ) . '</div>';
  		}
 
  		// close field
