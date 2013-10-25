@@ -13,4 +13,20 @@ jQuery(document).ready(function($){
 	$('.tm-field-date input[type=text]').datepicker({
 		
 	});
+
+	// sortable for managing a preloaded list
+	$('.tm-field-sorter ul').sortable({
+		placeholder: 'placeholder',
+		update: function(ui, e) {
+			
+			var ids = [];
+
+			$(this).find('li').each(function(){
+				ids.push( $(this).data('id') );
+			});
+
+			$(this).parent().find('.tm-field-sorter-ids').val( ids.join(',') );
+		}
+	});
+
 });

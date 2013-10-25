@@ -4,13 +4,14 @@
   padding: 1em;
   position: relative;
   background: #fff;
+  overflow: hidden;
 }
-/* line 12, ../sass/screen.scss */
+/* line 13, ../sass/screen.scss */
 .tm-metabox.postbox.has-panels .inside {
   padding: 0;
 }
 
-/* line 17, ../sass/screen.scss */
+/* line 18, ../sass/screen.scss */
 .tm-menu-bg {
   position: absolute;
   top: 0;
@@ -21,16 +22,13 @@
   border-right: 1px solid #dfdfdf;
 }
 
-/* line 28, ../sass/screen.scss */
+/* line 29, ../sass/screen.scss */
 .tm-menu {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
+  float: left;
   width: 200px;
   margin: 0;
 }
-/* line 37, ../sass/screen.scss */
+/* line 35, ../sass/screen.scss */
 .tm-menu li {
   padding: 0.5em 1em;
   color: #999;
@@ -44,64 +42,70 @@
   margin: 0;
   cursor: pointer;
   border-right: 1px solid #dfdfdf;
+  z-index: 10;
+  position: relative;
 }
-/* line 52, ../sass/screen.scss */
+/* line 51, ../sass/screen.scss */
+.tm-menu li:last-child {
+  margin-bottom: 1em;
+}
+/* line 56, ../sass/screen.scss */
 .tm-menu li:hover {
   color: #666;
 }
-/* line 56, ../sass/screen.scss */
+/* line 60, ../sass/screen.scss */
 .tm-menu li.selected {
   background: #fff;
   border-right-color: #fff;
   color: #000;
 }
 
-/* line 65, ../sass/screen.scss */
+/* line 69, ../sass/screen.scss */
 .has-panels .tm-field-group-container {
-  padding: 0 0 0 200px;
+  /*padding: 0 0 0 200px;*/
   overflow: hidden;
   background: #fff;
 }
 
-/* line 72, ../sass/screen.scss */
+/* line 76, ../sass/screen.scss */
 .tm-field-group {
   display: none;
   padding: 1em;
 }
-/* line 76, ../sass/screen.scss */
+/* line 80, ../sass/screen.scss */
 .tm-field-group.selected {
   display: block;
 }
 
-/* line 81, ../sass/screen.scss */
+/* line 85, ../sass/screen.scss */
 .tm-field {
   margin-bottom: 1.5em;
 }
-/* line 85, ../sass/screen.scss */
+/* line 89, ../sass/screen.scss */
 .tm-field:last-child {
   margin: 0;
 }
-/* line 89, ../sass/screen.scss */
+/* line 93, ../sass/screen.scss */
 .tm-field label {
   font-weight: bold;
   padding-bottom: 0.5em;
   display: block;
   font-size: 1.1em;
 }
-/* line 96, ../sass/screen.scss */
+/* line 100, ../sass/screen.scss */
 .tm-field .help {
   margin: 0.5em 0;
   color: #888;
 }
 
-/* picker */
-/* line 103, ../sass/screen.scss */
-.post-picker {
-  overflow: hidden;
+/* line 107, ../sass/screen.scss */
+.tm-field-checkbox .help {
+  display: inline;
+  margin-left: 0.5em;
 }
 
-/* line 107, ../sass/screen.scss */
-.picker-list {
+/* line 115, ../sass/screen.scss */
+.tm-field-sorter > div {
   max-width: 600px;
   background: #eee;
   margin: 0;
@@ -109,16 +113,12 @@
   border: 1px solid #ccc;
   margin-bottom: 1em;
 }
-/* line 116, ../sass/screen.scss */
-.picker-list .notice {
-  text-align: center;
-}
-/* line 120, ../sass/screen.scss */
-.picker-list h4 {
+/* line 124, ../sass/screen.scss */
+.tm-field-sorter h4 {
   margin: 0;
 }
-/* line 124, ../sass/screen.scss */
-.picker-list li {
+/* line 128, ../sass/screen.scss */
+.tm-field-sorter li {
   border: 1px solid #ccc;
   padding: 0.5em 1em;
   -webkit-border-radius: 0.75em;
@@ -139,56 +139,17 @@
   margin-left: 2em;
   text-align: left;
 }
-/* line 138, ../sass/screen.scss */
-.picker-list li:before {
+/* line 142, ../sass/screen.scss */
+.tm-field-sorter li:before {
   content: counter(list-counter) " ";
   float: left;
   margin-left: -40px;
-  font-size: 1.5em;
+  font-size: 1.25em;
   text-align: right;
   /*width: 2em;*/
-  line-height: 35px;
-}
-/* line 148, ../sass/screen.scss */
-.picker-list li nav {
-  display: block;
-  font-size: 0.8em;
+  line-height: 22px;
 }
 /* line 152, ../sass/screen.scss */
-.picker-list li nav a {
-  margin-right: 0.75em;
-  text-decoration: none;
-}
-/* line 158, ../sass/screen.scss */
-.picker-list li:last-child {
+.tm-field-sorter li:last-child {
   margin-bottom: 0;
-}
-/* line 163, ../sass/screen.scss */
-.picker-list .placeholder {
-  padding: 2em;
-  border: 1px dashed #666;
-}
-
-/* line 169, ../sass/screen.scss */
-.picker-query {
-  margin-right: 1em;
-}
-
-/* line 173, ../sass/screen.scss */
-.picker-results {
-  max-width: 600px;
-}
-/* line 177, ../sass/screen.scss */
-.picker-results .result {
-  padding: 1em 60px 1em 0;
-  border-bottom: 1px solid #ccc;
-}
-/* line 182, ../sass/screen.scss */
-.picker-results .result .add {
-  float: right;
-  margin: 0 -60px 0 20px;
-}
-/* line 187, ../sass/screen.scss */
-.picker-results .result:last-child {
-  border: 0;
 }
