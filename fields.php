@@ -6,8 +6,23 @@ if( !class_exists( 'Tabbed_Meta_Field' ) ) :
  *
  */
 class Tabbed_Meta_Field {
-	public static function validate( $post_id, $name, $value, $post ) {
-		return sanitize_text_field( $value ); 
+
+	public static function save( $post_id, $name, $post, $args ) {
+
+		if( isset( $_POST[$name] ) ) {
+
+			if( isset( $args['sanitize_callback'] ) && is_callable( $args['sanitize_callback'] ) ) {
+				$value = call_user_func_array( $args['sanitize_callback'], array( $_POST[$name] ) );
+			} else {
+				$value = sanitize_text_field( $_POST[$name] );
+			}
+
+			update_post_meta( $post_id, $name, $value );
+
+		} else {
+
+			delete_post_meta( $post_id, $name );
+		}	 
 	}
 }
 
@@ -61,8 +76,11 @@ class Tabbed_Meta_Date_Field extends Tabbed_Meta_Text_Field {
 	 *
 	 * @return string
 	 */
-	public static function validate( $post_id, $name, $value, $post = null ) {
-		return strtotime( $value );
+	public static function save( $post_id, $name, $post, $args ) {
+		if( isset( $_POST[$name] ) )
+			update_post_meta( $post_id, $name, strtotime( $value ) );
+		else
+			delete_post_meta( $post_id, $name );
 	}
 }
 
@@ -80,13 +98,20 @@ class Tabbed_Meta_Checkbox_Field extends Tabbed_Meta_Field {
  		);
 	}
 
-	public static function validate( $post_id, $name, $value, $post = null ) {
-		return 1;
+	/**
+	 * Save either a 1 or 0
+	 */
+	public static function save( $post_id, $name, $post, $args ) {
+
+		if( isset( $_POST[$name] ) )
+			update_post_meta( $post_id, $name, 1 );
+		else
+			update_post_meta( $post_id, $name, 0 );
 	}
 }
 
 /**
- *
+ * URL/Link field
  */
 class Tabbed_Meta_Link_Field extends Tabbed_Meta_Field {
 
@@ -106,10 +131,35 @@ class Tabbed_Meta_Link_Field extends Tabbed_Meta_Field {
 	}
 
 	/**
+	 * Use esc_url
+	 */
+	public static function save( $post_id, $name, $post, $args ) {
+		$args['sanitize_callback'] = 'esc_url';
+		parent::save( $post_id, $name, $post, $args );
+	}
+}
+
+/**
+ * Textarea field
+ */
+class Tabbed_Meta_Textarea_Field extends Tabbed_Meta_Field {
+
+	/**
 	 *
 	 */
-	public static function validate( $post_id, $name, $value, $post = null ) {
-		return esc_url( $value );
+	public static function render( $args ) {
+
+		// this input can have a placeholder value
+ 		$placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
+
+ 		// class is customizable
+ 		$class = isset( $args['class'] ) ? $args['class'] : 'widefat';
+
+ 		return sprintf(
+ 			'<textarea name="%s" class="widefat" rows="4">%s</textarea>',
+ 			esc_attr( $args['name'] ),
+ 			esc_textarea( $args['value'] )
+ 		);
 	}
 }
 

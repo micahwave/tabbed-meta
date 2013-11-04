@@ -15,19 +15,18 @@ if( !class_exists( 'Tabbed_Meta' ) ) :
 class Tabbed_Meta {
 
 	/**
-	 *
+	 * Keep track of meta boxes
 	 */
 	var $meta_boxes = array();
 
  	/**
- 	 *
+ 	 * Setup our hooks and filters
  	 */
  	function __construct() {
- 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+ 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 1 );
  		add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ) );
  		add_action( 'edit_form_advanced', array( $this, 'add_nonce' ) );
  		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
- 		add_action( 'wp_ajax_tm_search_posts', array( $this, 'search_posts') );
  	}
 
  	/**
@@ -45,66 +44,45 @@ class Tabbed_Meta {
  	}
 
  	/**
-	 *
-	 */
-	function search_posts() {
-
-		check_ajax_referer( 'tm_fields' );
-
-		if( !empty( $_REQUEST['s'] ) ) {
-
-			$args = array(
-				's' => sanitize_text_field( $_REQUEST['s'] ),
-				'post_type' => isset( $_REQUEST['post_type'] ) ? sanitize_text_field( $_REQUEST['post_type'] ) : 'post'
-			);		
-
-			// add post parent if possible
-			if( isset( $_REQUEST['post_parent'] ) ) {
-				$args['post_parent'] = intval( $_REQUEST['post_parent'] );
-			}
-
-			$posts = get_posts( $args );
-
-			if( $posts ) {
-				die( json_encode( $posts ) );
-			}
-		}
-	}
-
- 	/**
- 	 *
+ 	 * Add a nonce for our fields
  	 */
  	public function add_nonce() {
  		wp_nonce_field( 'tm_fields', 'tm_fields_nonce' );
  	}
 
  	/**
- 	 *
+ 	 * Add all the meta boxes for the current post type
  	 */
- 	public function add_meta_boxes() {
+ 	public function add_meta_boxes( $post_type ) {
 
- 		foreach( $this->meta_boxes as $post_type => $meta_box ) {
- 			foreach( $meta_box as $slug => $options ) {
+ 		// make sure there are boxes to add first
+ 		if( !isset( $this->meta_boxes[$post_type] ) )
+ 			return;
 
- 				if( isset( $options['tabs'] ) ) {
- 					$func = function( $classes ) { 
- 						$classes[] = 'tm-metabox has-panels';
- 						return $classes;
- 					};
- 				} else {
- 					$func = function( $classes ) { 
- 						$classes[] = 'tm-metabox';
- 						return $classes;
- 					};
- 				}
+		foreach( $this->meta_boxes[$post_type] as $slug => $options ) {
 
- 				$context = isset( $options['context'] ) ? $options['context'] : 'normal';
+			// tabbed style
+			if( isset( $options['tabs'] ) ) {
+				$func = function( $classes ) { 
+					$classes[] = 'tm-metabox has-panels';
+					return $classes;
+				};
 
- 				// put a class on the metabox so we can style it better
- 				add_filter( "postbox_classes_{$post_type}_{$slug}", $func );
- 				add_meta_box( $slug, $options['label'], array( $this, 'meta_box' ), $post_type, 'normal', 'low', array( 'options' => $options ) );
- 			}
- 		}
+			// other style
+			} else {
+				$func = function( $classes ) { 
+					$classes[] = 'tm-metabox';
+					return $classes;
+				};
+			}
+
+			$context = isset( $options['context'] ) ? $options['context'] : 'normal';
+
+			// put a class on the metabox so we can style it better
+			add_filter( "postbox_classes_{$post_type}_{$slug}", $func );
+			add_meta_box( $slug, $options['label'], array( $this, 'meta_box' ), $post_type, 'normal', 'low', array( 'options' => $options ) );
+		}
+ 		
  	}
 
  	/**
@@ -197,7 +175,7 @@ class Tabbed_Meta {
  		$value = get_post_meta( $post_id, $name, true );
 
  		// if the value is empty, set it to the default
- 		$args['value'] = empty( $value ) ? $default : $value;
+ 		$args['value'] = !isset( $value ) ? $default : $value;
 
  		// default field type is text
  		$field_type = isset( $args['type'] ) ? $args['type'] : 'text';
@@ -229,7 +207,10 @@ class Tabbed_Meta {
  	}
 
  	/**
+ 	 * Save all of the custom fields we've added
  	 *
+ 	 * @param int $post_id
+ 	 * @param object $post
  	 */
  	public function save_post( $post_id, $post ) {
 
@@ -258,30 +239,22 @@ class Tabbed_Meta {
 
 		foreach( $fields as $name => $options ) {
 
-			// save the field if its set
-			if( !empty( $_POST[$name] ) ) {
+			$type = isset( $options['type'] ) ? $options['type'] : 'text';
 
-				$type = isset( $options['type'] ) ? $options['type'] : 'text';
+			$func = 'Tabbed_Meta_' . $type . '_Field::save';
 
-		 		$func = 'Tabbed_Meta_' . $type . '_Field::validate';
-
-		 		// save field
-		 		if( is_callable( $func ) ) {	
-		 			$value = call_user_func_array( $func, array( $post_id, $name, $_POST[$name], $post ) );
-		 			update_post_meta( $post_id, $name, $value );
-		 		}
-
-		 	// no value, delete
-			} else {
-
-				delete_post_meta( $post_id, $name );
-			}
-			
+	 		// save field
+	 		if( is_callable( $func ) ) 
+	 			call_user_func_array( $func, array( $post_id, $name, $post, $options ) );
+		 		
 		}
  	}
 
  	/**
+ 	 * Helper method to get the fields for a given post type
  	 *
+ 	 * @param string $type
+ 	 * @return array $fields
  	 */
  	public function get_fields_for_post_type( $type ) {
 
@@ -307,7 +280,11 @@ class Tabbed_Meta {
  	}
 
  	/**
+ 	 * Add a meta box to our instance
  	 *
+ 	 * @param string $key
+ 	 * @param string|array $post_types
+ 	 * @param array $args
  	 */
  	public function add_meta_box( $key, $post_types, $args ) {
  		$post_types = (array) $post_types;
@@ -317,7 +294,12 @@ class Tabbed_Meta {
  	}
 
  	/**
+ 	 * Add just a field if you've already defined a meta box
  	 *
+ 	 * @param string $key
+ 	 * @param string $meta_box
+ 	 * @param string|array $post_types
+ 	 * @param array $args
  	 */
  	public function add_field( $key, $meta_box, $post_types, $args ) {
  		$post_types = (array) $post_types;
