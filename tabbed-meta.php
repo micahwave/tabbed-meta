@@ -7,12 +7,11 @@
  * AUthor URI: http://micahernst.com
  */
 
-
 require_once( dirname( __FILE__ ) . '/fields.php' );
 
-if( !class_exists( 'Tabbed_Meta' ) ) :
+if( !class_exists( 'NS_Tabbed_Meta' ) ) :
 
-class Tabbed_Meta {
+class NS_Tabbed_Meta {
 
 	/**
 	 * Keep track of meta boxes
@@ -239,6 +238,10 @@ class Tabbed_Meta {
 
 		foreach( $fields as $name => $options ) {
 
+			// allow some fields to be skipped/ignored
+			if( isset( $options['ignore'] ) && $options['ignore'] )
+				continue;
+
 			$type = isset( $options['type'] ) ? $options['type'] : 'text';
 
 			$func = 'Tabbed_Meta_' . $type . '_Field::save';
@@ -328,7 +331,7 @@ add_action( 'init', function(){
 		)
 	));
 
-	$tm = new Tabbed_Meta();
+	$tm = new NS_Tabbed_Meta();
 
 	// key, post types, options
 	$tm->add_meta_box( 'cat_options', 'cat', array(
