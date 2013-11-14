@@ -30,10 +30,11 @@ class NS_Tabbed_Meta {
 
  	/**
  	 * Add some scripts and styles to the page
+ 	 *
  	 */
  	public function scripts() {
  		wp_enqueue_style( 'tabbed-meta', plugins_url( 'css/screen.css', __FILE__ ) );
- 		wp_enqueue_style( 'jquery-ui-css', plugins_url( 'css/jquery-ui.min.css', __FILE__ ) );
+ 		wp_enqueue_style( 'jquery-ui-css', plugins_url( 'css/jquery-ui.css', __FILE__ ) );
  		wp_enqueue_script( 'tabbed-meta', plugins_url( 'js/main.js', __FILE__ ), array(
 			'jquery',
 			'jquery-ui-core',
