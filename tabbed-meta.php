@@ -187,7 +187,7 @@ class NS_Tabbed_Meta {
  			$html .= '<label>'.esc_html( $args['label'] ).'</label>';
  		}
  
- 		$func = 'Tabbed_Meta_' . $field_type . '_Field::render';
+ 		$func = 'NS_Tabbed_Meta_' . $field_type . '_Field::render';
 
  		// call method to build field
  		if( is_callable( $func ) ) {

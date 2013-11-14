@@ -1,11 +1,11 @@
 <?php
 
-if( !class_exists( 'Tabbed_Meta_Field' ) ) :
+if( !class_exists( 'NS_Tabbed_Meta_Field' ) ) :
 
 /**
  *
  */
-class Tabbed_Meta_Field {
+class NS_Tabbed_Meta_Field {
 
 	public static function save( $post_id, $name, $post, $args ) {
 
@@ -29,7 +29,7 @@ class Tabbed_Meta_Field {
 /**
  *
  */
-class Tabbed_Meta_Text_Field extends Tabbed_Meta_Field {
+class NS_Tabbed_Meta_Text_Field extends NS_Tabbed_Meta_Field {
 
 	/**
 	 *
@@ -55,7 +55,7 @@ class Tabbed_Meta_Text_Field extends Tabbed_Meta_Field {
 /**
  * Builds a data field that uses the jquery date picker
  */
-class Tabbed_Meta_Date_Field extends Tabbed_Meta_Text_Field {
+class NS_Tabbed_Meta_Date_Field extends NS_Tabbed_Meta_Text_Field {
 
 	/**
 	 * Output the field markup
@@ -87,7 +87,7 @@ class Tabbed_Meta_Date_Field extends Tabbed_Meta_Text_Field {
 /**
  *
  */
-class Tabbed_Meta_Checkbox_Field extends Tabbed_Meta_Field {
+class NS_Tabbed_Meta_Checkbox_Field extends NS_Tabbed_Meta_Field {
 
 	public static function render( $args ) {
 
@@ -113,7 +113,7 @@ class Tabbed_Meta_Checkbox_Field extends Tabbed_Meta_Field {
 /**
  * URL/Link field
  */
-class Tabbed_Meta_Link_Field extends Tabbed_Meta_Field {
+class NS_Tabbed_Meta_Link_Field extends NS_Tabbed_Meta_Field {
 
 	/**
 	 *
@@ -142,7 +142,7 @@ class Tabbed_Meta_Link_Field extends Tabbed_Meta_Field {
 /**
  * Textarea field
  */
-class Tabbed_Meta_Textarea_Field extends Tabbed_Meta_Field {
+class NS_Tabbed_Meta_Textarea_Field extends NS_Tabbed_Meta_Field {
 
 	/**
 	 *
@@ -166,7 +166,7 @@ class Tabbed_Meta_Textarea_Field extends Tabbed_Meta_Field {
 /**
  *
  */
-class Tabbed_Meta_Select_Field extends Tabbed_Meta_Field {
+class NS_Tabbed_Meta_Select_Field extends NS_Tabbed_Meta_Field {
 
 	/**
 	 *
@@ -198,7 +198,7 @@ class Tabbed_Meta_Select_Field extends Tabbed_Meta_Field {
 /**
  *
  */
-class Tabbed_Meta_Sorter_Field extends Tabbed_Meta_Field {
+class NS_Tabbed_Meta_Sorter_Field extends NS_Tabbed_Meta_Field {
 
 	/**
 	 *
