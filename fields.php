@@ -9,7 +9,8 @@ class NS_Tabbed_Meta_Field {
 
 	public static function save( $post_id, $name, $post, $args ) {
 
-		if( isset( $_POST[$name] ) ) {
+		// dont save blanks by default
+		if( !empty( $_POST[$name] ) ) {
 
 			if( isset( $args['sanitize_callback'] ) && is_callable( $args['sanitize_callback'] ) ) {
 				$value = call_user_func_array( $args['sanitize_callback'], array( $_POST[$name] ) );
