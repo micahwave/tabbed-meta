@@ -245,7 +245,7 @@ class NS_Tabbed_Meta {
 
 			$type = isset( $options['type'] ) ? $options['type'] : 'text';
 
-			$func = 'Tabbed_Meta_' . $type . '_Field::save';
+			$func = 'NS_Tabbed_Meta_' . $type . '_Field::save';
 
 	 		// save field
 	 		if( is_callable( $func ) ) 
