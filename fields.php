@@ -79,7 +79,7 @@ class NS_Tabbed_Meta_Date_Field extends NS_Tabbed_Meta_Text_Field {
 	 */
 	public static function save( $post_id, $name, $post, $args ) {
 		if( isset( $_POST[$name] ) )
-			update_post_meta( $post_id, $name, strtotime( $value ) );
+			update_post_meta( $post_id, $name, strtotime( $_POST[$name] ) );
 		else
 			delete_post_meta( $post_id, $name );
 	}
